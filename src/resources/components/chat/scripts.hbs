@@ -1,0 +1,310 @@
+{{!-- /////////////modals///////////// --}}
+{{> chat/modals/inviteFriends }}
+{{> chat/modals/editAvatar }}
+<div id="notification-div"></div>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script src="/assets/js/libs/jquery.min.js"></script>
+<script src="/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/plugins/plugins.bundle.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/SoundJS/1.0.2/soundjs.min.js"></script>
+
+<script>
+        let socket = io()
+        /**
+         *
+         *
+         *
+         *
+         * /////////////////////////////// VIEW ///////////////////////////////
+         *
+         *
+         *
+         */
+
+        let View = (function () {
+                let DOM = {
+                        chatForm: document.querySelector('#chat-form'),
+                        chatBody: document.querySelector('#chat-body'),
+                        modalAvatar: document.querySelector('#modal-edit-avatar'),
+
+
+                }
+                return {
+                        DOM,
+                        setMessage: (data) => {
+                                let html
+                                switch (data.type) {
+                                        case 'room':
+                                                html = ` <div class="message">
+            
+                                                <div class="message-body">
+
+                                                <div class="message-row">
+                                                        <div class="d-flex align-items-center">
+
+                                                        <div class="message-content bg-light">
+                                                                <div>${data.message}</div>
+                                                                <div class="mt-1">
+                                                                <small class="opacity-65">${moment(new Date()).format('h:mm A | DD/MM/YYYY')}</small>
+                                                                </div>
+                                                        </div>
+                                                
+                                                        </div>
+                                                </div>
+                                                </div>
+                                        </div>`
+
+                                                break
+                                        case 'group':
+                                                html = `
+                                                 <div class="message">
+                                                        <a class="avatar avatar-sm mr-4 mr-lg-5" href="#"
+                                                        data-chat-sidebar-toggle="#chat-1-user-profile">
+                                                        <img class="avatar-img" src="" alt="">
+                                                        </a>
+
+                                                        <div class="message-body">
+
+                                                        <div class="message-row">
+                                                                <div class="d-flex align-items-center">
+
+                                                                <!-- Message: content -->
+                                                                <div class="message-content bg-light">
+                                                                        <h6 class="mb-2">${data.user.username}</h6>
+                                                                        <div>${data.message}</div>
+
+                                                                        <div class="mt-1">
+                                                                        <small class="opacity-65">${moment(new Date()).format('h:mm A | DD/MM/YYYY')}</small>
+                                                                        </div>
+                                                                </div>
+
+                                                                </div>
+                                                        </div>
+
+                                                        </div>
+                                                </div>`
+                                                break
+
+                                }
+                                DOM.chatBody.insertAdjacentHTML('beforeend', html)
+                        },
+                        setMessageMine: (data) => {
+                                let html
+                                switch (data.type) {
+                                        case 'room':
+                                                html = `
+                                                <div class="message message-right">
+                                
+                                                <div class="message-body">
+
+                                                        <div class="message-row">
+                                                        <div class="d-flex align-items-center justify-content-end">
+
+                                                                <div class="dropdown">
+                                                                <a class="text-muted opacity-60 mr-3" href="#" data-toggle="dropdown"
+                                                                        aria-haspopup="true" aria-expanded="false">
+                                                                        <i class="fe-more-vertical"></i>
+                                                                </a>
+
+                                                                <div class="dropdown-menu">
+                                                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                                                        Delete <span class="ml-auto fe-trash-2"></span>
+                                                                        </a>
+                                                                </div>
+                                                                </div>
+                                                                <div class="message-content bg-primary text-white">
+                                                                <div>${data.message}</div>
+
+                                                                <div class="mt-1">
+                                                                        <small class="opacity-65">${moment(new Date()).format('h:mm A | DD/MM/YYYY')}</small>
+                                                                </div>
+                                                                </div>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                </div>`
+                                                break
+                                        case 'group':
+                                                html = `<div class="message message-right">
+                                                        <div class="message-body">
+                                                                <div class="message-row">
+                                                                <div class="d-flex align-items-center justify-content-end">
+                                                                        <div class="dropdown">
+                                                                        <a class="text-muted opacity-60 mr-3" href="#" data-toggle="dropdown"
+                                                                                aria-haspopup="true" aria-expanded="false">
+                                                                                <i class="fe-more-vertical"></i>
+                                                                        </a>
+
+                                                                        <div class="dropdown-menu">
+                                                                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                                                                Delete <span class="ml-auto fe-trash-2"></span>
+                                                                                </a>
+                                                                        </div>
+                                                                        </div>
+                                                                        <div class="message-content bg-primary text-white">
+                                                                        <div>${data.message}</div>
+
+                                                                        <div class="mt-1">
+                                                                                <small class="opacity-65">${ moment(new Date()).format('h:mm A | DD/MM/YYYY')}</small >
+                                                                        </div >
+                                                                        </div >
+                                                                </div >
+                                                                </div >
+
+                                                        </div >
+                                                        </div >`
+                                                break
+                                }
+                                DOM.chatBody.insertAdjacentHTML('beforeend', html)
+                        }, modalAvatar(data) {
+                                if (data.id) {
+                                        document.querySelector('#modal-edit-avatar #id').value = data.id
+                                }
+                                DOM.modalAvatar.querySelector('img').src = data.src
+                                $('#modal-edit-avatar').modal('show')
+                        },
+                        displayNotification(params) {
+                                const { error, message } = params
+                                if (error) {
+                                        toastr.error(error)
+
+                                } else if (message) {
+                                        toastr.success(message)
+                                }
+                        }
+                }
+        })()
+        /**
+       *
+       *
+       *
+       *
+       * ///////////////////////////////MODEL///////////////////////////////
+       *
+       *
+       *
+       */
+
+        let Model = (function () {
+
+                return {
+
+                }
+        })()
+
+        /**
+         *
+         *
+         *
+         *
+         * ///////////////////////////////CONTROLLER///////////////////////////////
+         *
+         *
+         *
+         */
+
+        let Controller = (function () {
+                let DOM = View.DOM
+                ////////////////listeners
+                let setupEventListeners = () => {
+                        //will listen the form if browser is in the correct pages
+                        if (window.location.pathname != '/chat')
+                                DOM.chatForm.addEventListener('submit', (e) => {
+                                        e.preventDefault()
+                                        let data, message, room, type
+                                        message = e.target.message.value
+                                        room = e.target.room.value
+                                        type = e.target.type.value
+
+                                        if (!message) throw new Error('Message null')
+                                        data = {
+                                                message,
+                                                room,
+                                                type,
+                                                userId: '{{user._id}}',
+                                        }
+                                        socket.emit('sendMessage', data, (condition) => {
+                                                if (condition) {
+                                                        View.setMessageMine(data)
+                                                } else throw new Error('an error ocurred')
+                                        })
+                                })
+                        /**
+                        * LISTEN MESSAGE
+                        */
+                        socket.on('message',data => {
+                                //this if-condition will determine if the message will be displayed, or be a notification
+                                if (data.type == 'room' && data.room._id == '{{room._id}}' ||
+                                        data.type == 'group' && data.group._id == '{{group._id}}') {
+                                        //set Message
+                                        View.setMessage(data)
+                                }
+                                else {
+                                        //set notification
+                                        toastr.options = {
+                                                "closeButton": true,
+                                                "debug": true,
+                                                "newestOnTop": true,
+                                                "progressBar": true,
+                                                "positionClass": "toast-top-right",
+                                                "preventDuplicates": false,
+                                                "showDuration": "300",
+                                                "hideDuration": "1000",
+                                                "timeOut": "10000",
+                                                "extendedTimeOut": "1000",
+                                                "showEasing": "swing",
+                                                "hideEasing": "linear",
+                                                "showMethod": "fadeIn",
+                                                "hideMethod": "fadeOut"
+                                        }
+                                        if (data.type == 'room') {
+                                                toastr.options.onclick = function () {
+                                                        const { location } = window
+                                                        location.replace(`${location.origin}/chat/${data.type}/${data.user._id}`)
+                                                }
+                                                toastr["info"](data.user.username, `"${data.message}"`)
+                                        }
+                                        else if (data.type == 'group') {
+                                                toastr.options.onclick = function () {
+                                                        const { location } = window
+                                                        location.replace(`${location.origin}/chat/${data.type}/${data.group._id}`)
+                                                }
+                                                toastr["info"](`${data.user.username}:"${data.message}"`, data.group.name)
+                                        }
+                                }
+
+                        })
+                }
+                let initialize = () => {
+
+                            //joining all rooms
+                        {{#each rooms as |room|}}
+                                socket.emit('join', '{{room._id}}')
+                        {{/each}}
+                        {{#each groups as |group|}}
+                                socket.emit('join', '{{group._id}}')
+                        {{/each}}
+
+                        //show Notification if there is any
+                        const params = Qs.parse(location.search, { ignoreQueryPrefix: true })
+                        View.displayNotification(params)
+
+
+                }
+                return {
+                        init: () => {
+                                initialize()
+                                setupEventListeners()
+                        },
+                        openModalAvatar: (data) => {
+                                View.modalAvatar(data)
+                        }
+                }
+        })()
+        Controller.init()
+</script>

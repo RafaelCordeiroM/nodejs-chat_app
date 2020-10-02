@@ -1,0 +1,45 @@
+<div class="modal fade" id="modal-edit-avatar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 text-center m-4">
+                                <img src="" alt="" width="200px">
+                        </div>
+                    </div>
+                </div>
+                <form action="/avatar" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="id">
+                    <input type="file" name="avatar" id="">
+                    {{!-- <div class="form-group">
+                        <label class="small">Photo</label>
+                        <div class="position-relative text-center bg-secondary rounded p-6">
+                            <div class="avatar bg-primary text-white mb-5">
+                                <i class="icon-md fe-image"></i>
+                            </div>
+
+                            <p class="small text-muted mb-0">You can upload jpg, gif or png files.
+                                <br> Max file size 3mb.</p>
+                            <input id="upload-chat-photo" class="d-none" name="avatar" type="file">
+                            <label class="stretched-label mb-0" for="upload-chat-photo"></label>
+                        </div>
+                    </div> --}}
+
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
